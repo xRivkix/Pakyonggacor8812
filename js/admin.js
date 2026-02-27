@@ -126,7 +126,7 @@ window.handleLogout = function () {
     signOut(auth).catch(console.error);
 }
 
-const ADMIN_UID = 'agR7FbpgGTR78toySjokHm96NOv2';
+const ADMIN_UID = 'LpZvPfqGcHMRN0LXWBSB8ql5bwn1';
 
 onAuthStateChanged(auth, (user) => {
     const loginOverlay = document.getElementById('loginOverlay');
@@ -1235,3 +1235,4 @@ window.savePerProviderSettings = function () {
         showNotification('Gagal menyimpan: ' + err.message, 'error');
     });
 }
+
