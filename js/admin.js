@@ -126,12 +126,12 @@ window.handleLogout = function () {
     signOut(auth).catch(console.error);
 }
 
-const ADMIN_UID = 'agR7FbpgGTR78toySjokHm96NOv2';
+const ADMIN_EMAIL = 'stokrivki50k@gmail.com';
 
 onAuthStateChanged(auth, (user) => {
     const loginOverlay = document.getElementById('loginOverlay');
     if (user) {
-        if (user.uid !== ADMIN_UID) {
+        if (user.email !== ADMIN_EMAIL) {
             signOut(auth).then(() => {
                 showNotification('AKSES DITOLAK: Anda bukan Admin!', 'error');
                 loginOverlay.classList.remove('hidden');
