@@ -106,19 +106,25 @@ window.handleLogin = function (event) {
     const errorDiv = document.getElementById('loginError');
     const btn = event.target.querySelector('button');
 
-    btn.innerHTML = 'Loading...';
-    btn.disabled = true;
-    errorDiv.classList.add('hidden');
+    if (btn) {
+        btn.innerHTML = 'Loading...';
+        btn.disabled = true;
+    }
+    if (errorDiv) errorDiv.classList.add('hidden');
 
     signInWithEmailAndPassword(auth, email, password)
         .then(() => {
             // Observer handles UI
         })
         .catch((error) => {
-            errorDiv.textContent = "Login Gagal: " + error.message;
-            errorDiv.classList.remove('hidden');
-            btn.innerHTML = 'LOGIN';
-            btn.disabled = false;
+            if (errorDiv) {
+                errorDiv.textContent = "Login Gagal: " + error.message;
+                errorDiv.classList.remove('hidden');
+            }
+            if (btn) {
+                btn.innerHTML = 'LOGIN';
+                btn.disabled = false;
+            }
         });
 }
 
@@ -126,7 +132,7 @@ window.handleLogout = function () {
     signOut(auth).catch(console.error);
 }
 
-const ADMIN_EMAIL = 'kintilkuda2010@gmail.com';
+const ADMIN_EMAIL = 'stokrivki50k@gmail.com';
 
 onAuthStateChanged(auth, (user) => {
     const loginOverlay = document.getElementById('loginOverlay');
@@ -134,14 +140,14 @@ onAuthStateChanged(auth, (user) => {
         if (user.email !== ADMIN_EMAIL) {
             signOut(auth).then(() => {
                 showNotification('AKSES DITOLAK: Anda bukan Admin!', 'error');
-                loginOverlay.classList.remove('hidden');
+                if (loginOverlay) loginOverlay.classList.remove('hidden');
             });
             return;
         }
-        loginOverlay.classList.add('hidden');
+        if (loginOverlay) loginOverlay.classList.add('hidden');
         initGameListener();
     } else {
-        loginOverlay.classList.remove('hidden');
+        if (loginOverlay) loginOverlay.classList.remove('hidden');
     }
 });
 
@@ -179,7 +185,7 @@ function updateDashboardStats() {
         if (data) {
             Object.values(data).forEach(t => {
                 const amount = parseInt(t.amount) || 0;
-                if (t.status === 'approved') { // Only approved? Or all? Usually approved.
+                if (t.status === 'approved') { 
                     if (t.type === 'deposit') totalDepo += amount;
                     else if (t.type === 'withdraw') totalWd += amount;
                 }
@@ -220,8 +226,7 @@ function initGameListener() {
         if (data) {
             allGames = Object.entries(data).reverse().map(([key, data]) => ({ key, data }));
 
-            // Note: Stats removed from here and moved to Dashboard View
-            updateDashboardStats(); // Update dashboard whenever games change too
+            updateDashboardStats(); 
 
             renderGames(allGames);
         } else {
@@ -273,7 +278,7 @@ window.editGame = function (key) {
     document.getElementById('gameCategory').value = g.category;
     document.getElementById('gameImage').value = g.image;
     document.getElementById('gameUrl').value = g.url;
-    document.getElementById('gameRTP').value = g.rtp || 90; // Default if missing
+    document.getElementById('gameRTP').value = g.rtp || 90; 
     document.querySelector('#addGameModal h3').innerText = 'Edit Game';
     window.openModal();
 }
@@ -300,19 +305,22 @@ function renderGames(list) {
             </td>
         </tr>
     `).join('');
-    document.getElementById('gameCountInfo').innerText = `Total: ${list.length}`;
+    const countInfo = document.getElementById('gameCountInfo');
+    if (countInfo) countInfo.innerText = `Total: ${list.length}`;
 }
 
 // === PAYMENT METHODS ===
 
 window.openPaymentModal = () => {
     document.getElementById('paymentModal').classList.remove('hidden');
-    togglePaymentFields(); // Init state
+    togglePaymentFields(); 
 }
 window.closePaymentModal = () => document.getElementById('paymentModal').classList.add('hidden');
 
-// Dynamic Fields based on Type
-document.getElementById('payType').addEventListener('change', togglePaymentFields);
+const payTypeEl = document.getElementById('payType');
+if (payTypeEl) {
+    payTypeEl.addEventListener('change', togglePaymentFields);
+}
 
 function togglePaymentFields() {
     const type = document.getElementById('payType').value;
@@ -321,25 +329,31 @@ function togglePaymentFields() {
     const qrContainer = document.getElementById('payImageContainer');
 
     if (type === 'ewallet') {
-        // QRIS Mode: Hide Number & Holder
-        numberContainer.classList.add('hidden');
-        document.getElementById('payNumber').removeAttribute('required');
-
-        holderContainer.classList.add('hidden');
-        document.getElementById('payHolder').removeAttribute('required');
-
-        qrContainer.classList.remove('hidden');
-        document.getElementById('payImage').setAttribute('required', 'true');
+        if (numberContainer) {
+            numberContainer.classList.add('hidden');
+            document.getElementById('payNumber')?.removeAttribute('required');
+        }
+        if (holderContainer) {
+            holderContainer.classList.add('hidden');
+            document.getElementById('payHolder')?.removeAttribute('required');
+        }
+        if (qrContainer) {
+            qrContainer.classList.remove('hidden');
+            document.getElementById('payImage')?.setAttribute('required', 'true');
+        }
     } else {
-        // Bank Mode
-        numberContainer.classList.remove('hidden');
-        document.getElementById('payNumber').setAttribute('required', 'true');
-
-        holderContainer.classList.remove('hidden');
-        document.getElementById('payHolder').setAttribute('required', 'true');
-
-        qrContainer.classList.add('hidden');
-        document.getElementById('payImage').removeAttribute('required');
+        if (numberContainer) {
+            numberContainer.classList.remove('hidden');
+            document.getElementById('payNumber')?.setAttribute('required', 'true');
+        }
+        if (holderContainer) {
+            holderContainer.classList.remove('hidden');
+            document.getElementById('payHolder')?.setAttribute('required', 'true');
+        }
+        if (qrContainer) {
+            qrContainer.classList.add('hidden');
+            document.getElementById('payImage')?.removeAttribute('required');
+        }
     }
 }
 
@@ -356,8 +370,8 @@ window.handlePaymentSubmit = function (e) {
 
     if (type === 'ewallet') {
         data.image = document.getElementById('payImage').value;
-        data.number = '-'; // Placeholder
-        data.holder = 'QRIS'; // Placeholder
+        data.number = '-'; 
+        data.holder = 'QRIS'; 
     } else {
         data.number = document.getElementById('payNumber').value;
         data.holder = document.getElementById('payHolder').value;
@@ -367,7 +381,7 @@ window.handlePaymentSubmit = function (e) {
         showNotification('Metode ditambah', 'success');
         window.closePaymentModal();
         e.target.reset();
-        togglePaymentFields(); // Reset UI
+        togglePaymentFields(); 
     });
 }
 window.deletePayment = function (key) {
@@ -382,7 +396,7 @@ onValue(paymentsRef, (snapshot) => {
     if (data) {
         Object.entries(data).forEach(([key, pay]) => {
             const el = document.createElement('div');
-            el.className = 'bg-dark-700 p-4 rounded border border-dark-600 relative flex flex-col gap-2'; // Added flex
+            el.className = 'bg-dark-700 p-4 rounded border border-dark-600 relative flex flex-col gap-2'; 
 
             let details = '';
             if (pay.type === 'ewallet') {
@@ -418,7 +432,6 @@ let allTransactions = [];
 let currentTypeFilter = 'all';
 let currentStatusFilter = 'pending';
 
-// Transaction search listener
 const transSearchEl = document.getElementById('transactionSearch');
 if (transSearchEl) {
     transSearchEl.addEventListener('input', renderTransactions);
@@ -427,7 +440,6 @@ if (transSearchEl) {
 window.filterTransactions = function (filterType, value) {
     if (filterType === 'type') {
         currentTypeFilter = value;
-        // Update button styles
         document.querySelectorAll('.trans-type-filter').forEach(btn => {
             if (btn.dataset.typeFilter === value) {
                 btn.classList.add('bg-dark-700', 'text-white');
@@ -439,7 +451,6 @@ window.filterTransactions = function (filterType, value) {
         });
     } else if (filterType === 'status') {
         currentStatusFilter = value;
-        // Update button styles
         document.querySelectorAll('.trans-status-filter').forEach(btn => {
             const isActive = btn.dataset.statusFilter === value;
             btn.classList.remove('bg-yellow-500/20', 'text-yellow-400', 'border-yellow-500/30',
@@ -491,23 +502,19 @@ function renderTransactions() {
 
     let filtered = allTransactions;
 
-    // Filter by type
     if (currentTypeFilter !== 'all') {
         filtered = filtered.filter(t => t.type === currentTypeFilter);
     }
 
-    // Filter by status
     if (currentStatusFilter !== 'all') {
         filtered = filtered.filter(t => t.status === currentStatusFilter);
     }
 
-    // Filter by search
     const searchVal = document.getElementById('transactionSearch')?.value.toLowerCase();
     if (searchVal) {
         filtered = filtered.filter(t => t.userId.toLowerCase().includes(searchVal));
     }
 
-    // Sort by timestamp (newest first)
     filtered.sort((a, b) => b.timestamp - a.timestamp);
 
     tbody.innerHTML = filtered.map(t => {
@@ -597,7 +604,6 @@ window.processTransaction = function (key, uid, amount, type, action) {
     }
 }
 
-// Force Reject - Delete transaction permanently
 window.forceRejectTransaction = function (key) {
     if (!confirm('⚠️ HAPUS PAKSA transaksi ini? Data akan dihapus permanen dari database.')) return;
 
@@ -613,7 +619,6 @@ window.forceRejectTransaction = function (key) {
 window.filterUsers = function (filter) {
     currentUserFilter = filter;
 
-    // Update Button State
     document.querySelectorAll('.user-filter').forEach(btn => {
         if (btn.dataset.filter === filter) btn.classList.add('active', 'bg-dark-700', 'text-white');
         else btn.classList.remove('active', 'bg-dark-700', 'text-white');
@@ -624,7 +629,6 @@ window.filterUsers = function (filter) {
     renderUsers();
 }
 
-// Search Listener
 const userSearchEl = document.getElementById('userSearch');
 if (userSearchEl) {
     userSearchEl.addEventListener('input', renderUsers);
@@ -636,11 +640,9 @@ function renderUsers() {
 
     let filtered = allUsers;
 
-    // Filter by Status
     if (currentUserFilter === 'active') filtered = filtered.filter(u => u.status !== 'banned');
     if (currentUserFilter === 'banned') filtered = filtered.filter(u => u.status === 'banned');
 
-    // Filter by Search
     const searchVal = document.getElementById('userSearch')?.value.toLowerCase();
     if (searchVal) {
         filtered = filtered.filter(u =>
@@ -706,7 +708,6 @@ window.handleBalanceSubmit = function (e) {
 
     if (!uid || !amount || amount <= 0) return showNotification('Data tidak valid', 'error');
 
-    // 1. Get current balance
     get(ref(db, `users/${uid}/balance`)).then((snap) => {
         const currentBal = parseInt(snap.val()) || 0;
         const newBal = currentBal + amount;
@@ -714,7 +715,6 @@ window.handleBalanceSubmit = function (e) {
         const updates = {};
         updates[`users/${uid}/balance`] = newBal;
 
-        // 2. Record Transaction History (Auto Approved)
         const transId = push(transactionsRef).key;
         updates[`transactions/${transId}`] = {
             userId: uid,
@@ -751,12 +751,10 @@ window.toggleSubmenu = function (id) {
     const submenu = document.getElementById(`submenu-${id}`);
     const arrow = document.getElementById(`arrow-${id}`);
 
-    // Close other submenus if we had multiple (currently just one)
-
     if (submenu.classList.contains('hidden')) {
         submenu.classList.remove('hidden');
         arrow.style.transform = 'rotate(180deg)';
-        switchAdminTab('users'); // Auto switch to users tab parent
+        switchAdminTab('users'); 
     } else {
         submenu.classList.add('hidden');
         arrow.style.transform = 'rotate(0deg)';
@@ -766,19 +764,20 @@ window.toggleSubmenu = function (id) {
 // === ADMIN SETTINGS ===
 const adminSettingsRef = ref(db, 'admin_settings');
 
-// Load Admin Profile
 onValue(adminSettingsRef, (snapshot) => {
     const data = snapshot.val();
     if (data) {
         if (data.name) {
             document.querySelectorAll('#adminSidebarName').forEach(el => el.innerText = data.name);
-            document.getElementById('editAdminName').value = data.name;
+            const editAdminName = document.getElementById('editAdminName');
+            if (editAdminName) editAdminName.value = data.name;
             const settingsName = document.getElementById('settingsAdminName');
             if (settingsName) settingsName.innerText = data.name;
         }
         if (data.avatar) {
             document.querySelectorAll('#adminSidebarAvatar').forEach(el => el.src = data.avatar);
-            document.getElementById('editAdminAvatar').value = data.avatar;
+            const editAdminAvatar = document.getElementById('editAdminAvatar');
+            if (editAdminAvatar) editAdminAvatar.value = data.avatar;
             const settingsAvatar = document.getElementById('settingsAdminAvatar');
             if (settingsAvatar) settingsAvatar.src = data.avatar;
         }
@@ -786,9 +785,8 @@ onValue(adminSettingsRef, (snapshot) => {
 });
 
 window.openAdminSettings = function () {
-    document.getElementById('adminSettingsModal').classList.remove('hidden');
-    // Pre-fill is handled by onValue, but just in case:
-    // Values are already bound in the DOM by the previous load
+    const modal = document.getElementById('adminSettingsModal');
+    if (modal) modal.classList.remove('hidden');
 }
 
 window.handleAdminUpdate = function (e) {
@@ -831,7 +829,6 @@ window.handleBroadcast = function (e) {
 // === SITE CONFIGURATION ===
 const siteConfigRef = ref(db, 'site_config');
 
-// Load site config
 onValue(siteConfigRef, (snapshot) => {
     const data = snapshot.val();
     if (data) {
@@ -969,13 +966,11 @@ window.handlePromoSubmit = function (e) {
     };
 
     if (key) {
-        // Update existing
         update(ref(db, `promos/${key}`), promoData).then(() => {
             showNotification('Promo berhasil diperbarui!', 'success');
             document.getElementById('promoModal').classList.add('hidden');
         });
     } else {
-        // Create new
         promoData.createdAt = Date.now();
         push(promosRef, promoData).then(() => {
             showNotification('Promo berhasil ditambahkan!', 'success');
@@ -1044,7 +1039,6 @@ window.deleteRunningText = function (key) {
 // === PROVIDER API SETTINGS ===
 const providerConfigRef = ref(db, 'site_config/provider_settings');
 
-// Load provider settings on init
 onValue(providerConfigRef, (snapshot) => {
     const data = snapshot.val();
     if (data) {
@@ -1060,7 +1054,6 @@ onValue(providerConfigRef, (snapshot) => {
             if (firebaseInfo) firebaseInfo.classList.add('hidden');
         }
 
-        // Load API settings
         if (document.getElementById('providerApiUrl')) {
             document.getElementById('providerApiUrl').value = data.apiUrl || '';
             document.getElementById('providerApiKey').value = data.apiKey || '';
@@ -1077,29 +1070,21 @@ window.toggleProviderMode = function () {
     const firebaseInfo = document.getElementById('firebaseModeInfo');
 
     if (modeSwitch.checked) {
-        // API mode
         modeLabel.textContent = 'API Provider';
         apiSettings.classList.remove('hidden');
         firebaseInfo.classList.add('hidden');
-
-        // Test API connection for all providers
-        console.log('🔌 API Provider Mode ENABLED - Testing connections...');
         testAllProviderAPIs();
     } else {
-        // Firebase mode
         modeLabel.textContent = 'Firebase';
         apiSettings.classList.add('hidden');
         firebaseInfo.classList.remove('hidden');
-        console.log('🔥 Firebase Mode ENABLED - Using local database');
     }
 
-    // Save mode to Firebase
     update(providerConfigRef, {
         mode: modeSwitch.checked ? 'api' : 'firebase'
     });
 }
 
-// Test all provider API connections
 async function testAllProviderAPIs() {
     const providers = ['pragmatic', 'pgsoft', 'habanero', 'spade', 'joker', 'microgaming'];
 
@@ -1109,34 +1094,19 @@ async function testAllProviderAPIs() {
             const data = snap.val();
 
             if (data && data.apiUrl) {
-                console.log(`🎮 [${provider.toUpperCase()}] API Config Found:`);
-                console.log(`   URL: ${data.apiUrl}`);
-                console.log(`   Key: ${data.apiKey ? '✅ Set' : '❌ Not set'}`);
-                console.log(`   Secret: ${data.secretKey ? '✅ Set' : '❌ Not set'}`);
-
-                // Attempt connection test
                 try {
-                    const response = await fetch(data.apiUrl + '/ping', {
+                    await fetch(data.apiUrl + '/ping', {
                         method: 'GET',
                         headers: { 'X-API-Key': data.apiKey || '' }
                     });
-                    if (response.ok) {
-                        console.log(`   Connection: ✅ SUCCESS`);
-                    } else {
-                        console.log(`   Connection: ⚠️ HTTP ${response.status}`);
-                    }
                 } catch (e) {
-                    console.log(`   Connection: ❌ FAILED (${e.message})`);
+                    console.log(`Connection test info: ${e.message}`);
                 }
-            } else {
-                console.log(`🎮 [${provider.toUpperCase()}] No API config set`);
             }
         } catch (err) {
-            console.error(`❌ Error checking ${provider}:`, err);
+            console.error(`Error checking ${provider}:`, err);
         }
     }
-
-    console.log('📊 API Connection test completed');
 }
 
 window.saveProviderSettings = function () {
@@ -1173,13 +1143,11 @@ window.handleAddUser = function (e) {
     const username = document.getElementById('newUserUsername').value;
     const balance = parseInt(document.getElementById('newUserBalance').value) || 0;
 
-    // Create user using Firebase Auth
     import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js").then(({ createUserWithEmailAndPassword }) => {
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const uid = userCredential.user.uid;
 
-                // Create user profile in database
                 set(ref(db, `users/${uid}`), {
                     email: email,
                     username: username,
@@ -1200,8 +1168,6 @@ window.handleAddUser = function (e) {
 }
 
 // === PER-PROVIDER API SETTINGS ===
-const perProviderConfigRef = ref(db, 'site_config/provider_apis');
-
 window.openProviderApiModal = function (provider) {
     const modal = document.getElementById('providerApiModal');
     if (modal) {
@@ -1209,7 +1175,6 @@ window.openProviderApiModal = function (provider) {
         document.getElementById('providerApiName').value = provider;
         document.getElementById('providerApiModalTitle').textContent = `API Settings: ${provider.toUpperCase()}`;
 
-        // Load existing settings
         get(ref(db, `site_config/provider_apis/${provider}`)).then(snap => {
             const data = snap.val() || {};
             document.getElementById('perProviderUrl').value = data.apiUrl || '';
