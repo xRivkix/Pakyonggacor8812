@@ -126,7 +126,7 @@ window.handleLogout = function () {
     signOut(auth).catch(console.error);
 }
 
-const ADMIN_UID = 'agR7FbpgGTR78toySjokHm96NOv2';
+const ADMIN_UID = 'jLVTYtYvvyO7wEnSKTM4Inyn4QC2';
 
 onAuthStateChanged(auth, (user) => {
     const loginOverlay = document.getElementById('loginOverlay');
