@@ -7,7 +7,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyAVppBomDuRxW8GDrzuv0Gign-vg9i41TI",
     authDomain: "fbn-slot.firebaseapp.com",
     databaseURL: "https://fbn-slot-default-rtdb.asia-southeast1.firebasedatabase.app/",
-    projectId: "fbn-slot",
+    projectId: "rivki-2c061",
     storageBucket: "fbn-slot.firebasestorage.app",
     messagingSenderId: "933152425056",
     appId: "1:933152425056:web:fff2c3696f1fb3f3e66f05"
