@@ -4,13 +4,13 @@ import { getDatabase, ref, onValue, set, get, child, push, update, remove } from
 
 // TODO: Replace with your actual Firebase Configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyAVppBomDuRxW8GDrzuv0Gign-vg9i41TI",
-    authDomain: "fbn-slot.firebaseapp.com",
-    databaseURL: "https://fbn-slot-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    apiKey: "AIzaSyBY42ucaZku8mcFg-a94j_mkigBOtXefnk",
+    authDomain: "rivki-2c061.firebaseapp.com",
+    databaseURL: "https://rivki-2c061-default-rtdb.asia-southeast1.firebasedatabase.app/",
     projectId: "rivki-2c061",
-    storageBucket: "fbn-slot.firebasestorage.app",
-    messagingSenderId: "933152425056",
-    appId: "1:933152425056:web:fff2c3696f1fb3f3e66f05"
+    storageBucket: "rivki-2c061.firebasestorage.app",
+    messagingSenderId: "200676632779",
+    appId: "1:200676632779:web:bea7faf2c90f2e02f4d34e"
 };
 
 // Initialize Firebase
