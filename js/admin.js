@@ -7,7 +7,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from
 const firebaseConfig = {
     apiKey: "AIzaSyBY42ucaZku8mcFg-a94j_mkigBOtXefnk",
     authDomain: "rivki-2c061.firebaseapp.com",
-    databaseURL: "",
+    databaseURL: "https://rivki-2c061-default-rtdb.asia-southeast1.firebasedatabase.app/",
     projectId: "rivki-2c061",
     storageBucket: "rivki-2c061.firebasestorage.app",
     messagingSenderId: "200676632779",
