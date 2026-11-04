@@ -132,7 +132,7 @@ window.handleLogout = function () {
     signOut(auth).catch(console.error);
 }
 
-const ADMIN_EMAIL = 'stokrivki50k@gmail.com';
+const ADMIN_EMAIL = 'kintilkuda2010@gmail.com';
 
 onAuthStateChanged(auth, (user) => {
     const loginOverlay = document.getElementById('loginOverlay');
